@@ -3,6 +3,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('task-input');
     const list = document.getElementById('task-list');
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    // Audio setup for completion sounds
+    let audioCtx;
+    let completionChain = 0;
+    let lastCompletionTime = 0;
+    let chainResetTimer;
+    // Play a procedural tone; pitch increases with rapid completions
+    function playCompletionSound() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const now = Date.now();
+        if (now - lastCompletionTime < 800) {
+            completionChain++;
+        } else {
+            completionChain = 1;
+        }
+        lastCompletionTime = now;
+        clearTimeout(chainResetTimer);
+        chainResetTimer = setTimeout(() => { completionChain = 0; }, 1000);
+        const baseFreq = 440; // A4
+        const freq = baseFreq * Math.pow(1.2, completionChain - 1);
+        const duration = 0.15; // seconds
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = freq;
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        oscillator.connect(gainNode).connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
+    }
 
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -39,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveTasks();
             if (checkbox.checked) {
                 span.classList.add('completed');
+                playCompletionSound();
                 li.classList.add('animate-complete');
                 li.addEventListener('animationend', () => {
                     li.classList.remove('animate-complete');
