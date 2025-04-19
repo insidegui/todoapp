@@ -2,7 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('task-form');
     const input = document.getElementById('task-input');
     const list = document.getElementById('task-list');
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    // Load tasks from localStorage, or seed with sample content on first load
+    let tasks;
+    const stored = localStorage.getItem('tasks');
+    if (stored === null) {
+        tasks = [
+            { text: 'Buy groceries', completed: false },
+            { text: 'Call mom', completed: false },
+            { text: 'Finish the report', completed: false },
+            { text: 'Plan weekend trip', completed: false },
+            { text: 'Read a chapter of a book', completed: false },
+            { text: 'Practice guitar', completed: false },
+            { text: 'Clean workspace', completed: false },
+            { text: 'Pay bills', completed: false }
+        ];
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    } else {
+        tasks = JSON.parse(stored) || [];
+    }
     // Audio setup for completion sounds
     let audioCtx;
     let completionChain = 0;
