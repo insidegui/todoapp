@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let audioCtx;
     let completionChain = 0;
     let lastCompletionTime = 0;
+    let lastCompletedTask = null;
     let chainResetTimer;
     // Confetti setup
     let confettiContainer;
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     // Play a procedural tone; pitch increases with rapid completions
-    function playCompletionSound() {
+    function playCompletionSound(task) {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
@@ -57,16 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
             audioCtx.resume();
         }
         const now = Date.now();
-        // Increase pitch if completions occur within 1.5 seconds
-        if (now - lastCompletionTime < 1500) {
+        // Increase pitch only if different task within 1.5 seconds
+        if (now - lastCompletionTime < 1500 && lastCompletedTask && lastCompletedTask !== task) {
             completionChain++;
         } else {
             completionChain = 1;
         }
         lastCompletionTime = now;
+        lastCompletedTask = task;
         clearTimeout(chainResetTimer);
-        // Reset chain after 1.5 seconds of inactivity
-        chainResetTimer = setTimeout(() => { completionChain = 0; }, 1500);
+        // Reset chain and last task after 1.5 seconds of inactivity
+        chainResetTimer = setTimeout(() => {
+            completionChain = 0;
+            lastCompletedTask = null;
+        }, 1500);
         const baseFreq = 440; // A4
         const freq = baseFreq * Math.pow(1.2, completionChain - 1);
         const duration = 0.15; // seconds
@@ -169,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveTasks();
             if (checkbox.checked) {
                 span.classList.add('completed');
-                playCompletionSound();
+                playCompletionSound(task);
                 li.classList.add('animate-complete');
                 li.addEventListener('animationend', () => {
                     li.classList.remove('animate-complete');
