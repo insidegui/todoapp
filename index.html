@@ -14,9 +14,18 @@
                 <h2>My TODO List</h2>
             </div>
             <div class="card-body">
-                <form id="task-form" class="d-flex mb-3">
-                    <input type="text" id="task-input" class="form-control me-2" placeholder="Add new task...">
-                    <button type="submit" class="btn btn-primary">Add</button>
+                <form id="task-form" class="input-group mb-3">
+                    <input type="text"
+                           id="task-input"
+                           class="form-control"
+                           placeholder="Add new task..."
+                           aria-label="Add new task">
+                    <button class="btn btn-primary"
+                            type="submit"
+                            id="add-task-btn"
+                            aria-label="Add task">
+                        Add
+                    </button>
                 </form>
                 <ul id="task-list" class="list-group"></ul>
             </div>
