@@ -55,6 +55,27 @@
 .animate-delete {
     animation: deleteAnimation 0.4s ease-in forwards;
 }
+/* Delete button (small 'x' icon) */
+.delete-btn {
+    margin-left: 0.5rem;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: #6c757d;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color .2s, color .2s;
+}
+.delete-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #343a40;
+}
 body {
     transition: background-color .3s, color .3s;
 }
@@ -96,5 +117,13 @@ body {
     }
     .completed {
         color: #888;
+    }
+    /* Delete button dark mode */
+    .delete-btn {
+        color: #888;
+    }
+    .delete-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ddd;
     }
 }

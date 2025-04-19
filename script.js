@@ -154,8 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn btn-danger btn-sm';
-        deleteBtn.textContent = 'Delete';
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.setAttribute('aria-label', 'Delete task');
 
         li.appendChild(checkbox);
         li.appendChild(span);
