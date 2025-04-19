@@ -66,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create a task list item with event handlers and animations
     function createTaskElement(task) {
         const li = document.createElement('li');
-        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        // Use flex layout and left-align text, push delete button to the right
+        li.className = 'list-group-item d-flex align-items-center';
         li.style.overflow = 'hidden';
 
         const checkbox = document.createElement('input');
@@ -76,6 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const span = document.createElement('span');
         span.textContent = task.text;
+        // Flex grow for left-aligned text and to push delete button to right
+        span.classList.add('flex-grow-1');
         if (task.completed) {
             span.classList.add('completed');
         }
