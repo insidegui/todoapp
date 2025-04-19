@@ -25,6 +25,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let completionChain = 0;
     let lastCompletionTime = 0;
     let chainResetTimer;
+    // Confetti setup
+    let confettiContainer;
+    const confettiColors = ['#FFC107', '#28A745', '#DC3545', '#17A2B8', '#8F3F97', '#FF5722'];
+    function createConfettiContainer() {
+        confettiContainer = document.createElement('div');
+        confettiContainer.id = 'confetti-container';
+        document.body.appendChild(confettiContainer);
+    }
+    function triggerConfetti() {
+        if (!confettiContainer) createConfettiContainer();
+        const count = 100;
+        for (let i = 0; i < count; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+            confetti.style.left = (Math.random() * 100) + '%';
+            confetti.style.top = '0px';
+            confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+            confettiContainer.appendChild(confetti);
+            confetti.addEventListener('animationend', () => confetti.remove());
+        }
+    }
     // Play a procedural tone; pitch increases with rapid completions
     function playCompletionSound() {
         if (!audioCtx) {
@@ -57,6 +80,43 @@ document.addEventListener('DOMContentLoaded', () => {
         oscillator.connect(gainNode).connect(audioCtx.destination);
         oscillator.start();
         oscillator.stop(audioCtx.currentTime + duration);
+    }
+
+    // Celebration sound ("ta-da")
+    function playTaDaSound() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        // first note
+        const freq1 = 440;
+        const dur1 = 0.2;
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.value = freq1;
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(0.08, now + 0.02);
+        gain1.gain.linearRampToValueAtTime(0, now + dur1);
+        osc1.connect(gain1).connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + dur1);
+        // second note
+        const freq2 = 660;
+        const dur2 = 0.3;
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.value = freq2;
+        gain2.gain.setValueAtTime(0, now + dur1);
+        gain2.gain.linearRampToValueAtTime(0.08, now + dur1 + 0.02);
+        gain2.gain.linearRampToValueAtTime(0, now + dur1 + dur2);
+        osc2.connect(gain2).connect(audioCtx.destination);
+        osc2.start(now + dur1);
+        osc2.stop(now + dur1 + dur2);
     }
 
     function saveTasks() {
@@ -102,6 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.addEventListener('animationend', () => {
                     li.classList.remove('animate-complete');
                 }, { once: true });
+                // Celebrate if all tasks are complete
+                if (tasks.every(t => t.completed)) {
+                    triggerConfetti();
+                    playTaDaSound();
+                }
             } else {
                 span.classList.remove('completed');
             }
