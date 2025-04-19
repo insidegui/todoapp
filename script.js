@@ -104,17 +104,27 @@ document.addEventListener('DOMContentLoaded', () => {
         osc1.connect(gain1).connect(audioCtx.destination);
         osc1.start(now);
         osc1.stop(now + dur1);
-        // second note
+        // second note with longer tail and simple reverb
         const freq2 = 660;
-        const dur2 = 0.3;
+        const dur2 = 0.6; // longer sustain for reverb-like tail
         const osc2 = audioCtx.createOscillator();
         const gain2 = audioCtx.createGain();
         osc2.type = 'triangle';
         osc2.frequency.value = freq2;
         gain2.gain.setValueAtTime(0, now + dur1);
         gain2.gain.linearRampToValueAtTime(0.08, now + dur1 + 0.02);
-        gain2.gain.linearRampToValueAtTime(0, now + dur1 + dur2);
+        // decay down exponentially to create a tail
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + dur1 + dur2);
+        // simple reverb: delay node with feedback
+        const delayNode = audioCtx.createDelay();
+        delayNode.delayTime.value = 0.2;
+        const feedbackGain = audioCtx.createGain();
+        feedbackGain.gain.value = 0.4;
+        delayNode.connect(feedbackGain).connect(delayNode);
+        // connect nodes
         osc2.connect(gain2).connect(audioCtx.destination);
+        gain2.connect(delayNode);
+        delayNode.connect(audioCtx.destination);
         osc2.start(now + dur1);
         osc2.stop(now + dur1 + dur2);
     }
