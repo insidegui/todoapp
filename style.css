@@ -76,6 +76,10 @@
     background-color: rgba(0, 0, 0, 0.05);
     color: #343a40;
 }
+/* Prevent text cursor on task titles; keep regular arrow */
+.list-group-item span {
+    cursor: default;
+}
 body {
     transition: background-color .3s, color .3s;
 }
