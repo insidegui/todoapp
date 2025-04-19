@@ -190,13 +190,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Delete animation
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             li.classList.add('animate-delete');
             li.addEventListener('animationend', () => {
                 tasks = tasks.filter(t => t !== task);
                 saveTasks();
                 li.remove();
             }, { once: true });
+        });
+        // Allow clicking anywhere on the item (except delete button/checkbox) to toggle completion
+        li.addEventListener('click', (e) => {
+            if (e.target === deleteBtn || e.target === checkbox) return;
+            checkbox.click();
         });
 
         return li;
