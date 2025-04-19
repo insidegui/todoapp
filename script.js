@@ -17,14 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
             audioCtx.resume();
         }
         const now = Date.now();
-        if (now - lastCompletionTime < 800) {
+        // Increase pitch if completions occur within 1.5 seconds
+        if (now - lastCompletionTime < 1500) {
             completionChain++;
         } else {
             completionChain = 1;
         }
         lastCompletionTime = now;
         clearTimeout(chainResetTimer);
-        chainResetTimer = setTimeout(() => { completionChain = 0; }, 1000);
+        // Reset chain after 1.5 seconds of inactivity
+        chainResetTimer = setTimeout(() => { completionChain = 0; }, 1500);
         const baseFreq = 440; // A4
         const freq = baseFreq * Math.pow(1.2, completionChain - 1);
         const duration = 0.15; // seconds
