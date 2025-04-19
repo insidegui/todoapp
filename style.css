@@ -49,11 +49,12 @@
     animation: completeAnimation 0.6s ease;
 }
 @keyframes deleteAnimation {
-    0% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100%); }
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
 }
 .animate-delete {
-    animation: deleteAnimation 0.4s ease-in forwards;
+    transform-origin: center center;
+    animation: deleteAnimation 0.3s ease-in forwards;
 }
 /* Delete button (small 'x' icon) */
 .delete-btn {
