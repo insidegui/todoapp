@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m http.server --bind 0.0.0.0
+python -m http.server 3002

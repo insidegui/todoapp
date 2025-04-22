@@ -2,12 +2,17 @@
 
 A simple, good-looking TODO list web application built with HTML, Bootstrap, and JavaScript.
 
+This app was entirely implemented using OpenAI Codex with the GPT 4.1 model.
+
+![screenshot](./screenshot.png)
+
 ## Features
 
 - Add tasks
 - Mark tasks as complete
 - Delete tasks
 - Persistent storage using `localStorage`
+- Fun sound effects 🥳
 
 ## Usage
 
